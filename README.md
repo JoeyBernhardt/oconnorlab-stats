@@ -9,4 +9,7 @@
 ##### Readings
 
 * [Multimodel inference in ecology and evolution](http://onlinelibrary.wiley.com/doi/10.1111/j.1420-9101.2010.02210.x/full)
-* Hands on coding examples
+* [Burnham and Anderson 2009](https://github.com/JoeyBernhardt/oconnorlab-stats/blob/master/Readings/Burnham%20and%20Anderson%20book%20chapter.pdf)
+
+##### Code
+* [Hands on coding examples](https://github.com/JoeyBernhardt/oconnorlab-stats/blob/master/Rscripts/Richardson_lab_mting_Jan26.16.Rmd)
