@@ -5,7 +5,7 @@ widescreen: true
 smaller: true
 ---
 
-## R Markdown
+## AIC and model averaging
 Load following packages
 
 ```{r, warning=FALSE, error=FALSE, message = FALSE}
