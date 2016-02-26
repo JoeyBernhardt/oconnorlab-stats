@@ -246,6 +246,52 @@ AIC(global.lm, reduced.lm)</pre>
 ## Importance:          1.00 0.87 0.29 0.11
 ## N containing models:    4    3    1    1</pre>
 
+<pre class = 'prettyprint lang-r'>summary(model.avg(all.models, subset = cumsum(weight) &lt;= .95)) ## or all models in the 95% CI</pre>
+
+<pre >## 
+## Call:
+## model.avg.model.selection(object = all.models, subset = cumsum(weight) &lt;= 
+##     0.95)
+## 
+## Component model call: 
+## lmer(formula = yield ~ &lt;4 unique rhs&gt;, data = npk, na.action = 
+##      na.fail)
+## 
+## Component models: 
+##     df logLik   AICc delta weight
+## 12   5 -65.70 152.99  0.00   0.48
+## 124  6 -62.52 154.01  1.02   0.29
+## 2    4 -69.83 155.62  2.63   0.13
+## 123  6 -64.03 155.97  2.98   0.11
+## 
+## Term codes: 
+##   K   N   P K:N 
+##   1   2   3   4 
+## 
+## Model-averaged coefficients:  
+## (full average) 
+##             Estimate Std. Error Adjusted SE z value Pr(&gt;|z|)    
+## (Intercept)  53.5305     2.2315      2.3660  22.625  &lt; 2e-16 ***
+## K1           -2.8001     2.2605      2.3517   1.191  0.23378    
+## N1            6.2897     2.1110      2.2214   2.831  0.00463 ** 
+## K1:N1        -1.3461     2.6940      2.7688   0.486  0.62683    
+## P1           -0.1274     0.6496      0.6818   0.187  0.85171    
+##  
+## (conditional average) 
+##             Estimate Std. Error Adjusted SE z value Pr(&gt;|z|)    
+## (Intercept)   53.530      2.232       2.366  22.625  &lt; 2e-16 ***
+## K1            -3.211      2.131       2.241   1.433  0.15186    
+## N1             6.290      2.111       2.221   2.831  0.00463 ** 
+## K1:N1         -4.700      3.094       3.317   1.417  0.15650    
+## P1            -1.183      1.634       1.751   0.676  0.49919    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Relative variable importance: 
+##                      N    K    K:N  P   
+## Importance:          1.00 0.87 0.29 0.11
+## N containing models:    4    3    1    1</pre>
+
 </article></slide><slide class=''><hgroup><h2>Model averaged 95% CIs</h2></hgroup><article  id="model-averaged-95-cis">
 
 <p>The command <em>full = TRUE</em> gives full averages</p>
@@ -284,13 +330,13 @@ model.out</pre>
 
 </article></slide><slide class=''><hgroup><h2>Or using this function by Joey</h2></hgroup><article  id="or-using-this-function-by-joey">
 
-<pre class = 'prettyprint lang-r'>model.output &lt;- top.list %&gt;% 
-        map(r.squaredGLMM) %&gt;%
-        as.data.frame(.)%&gt;%
-        t(.) %&gt;% 
-        as.data.frame(.) %&gt;% 
-        bind_cols(., as.data.frame(summary(model.avg(all.models.std, subset = delta &lt;
-4))$msTable))</pre>
+<pre class = 'prettyprint lang-r'># model.output &lt;- top.list %&gt;% 
+#         map(r.squaredGLMM) %&gt;%
+#         as.data.frame(.)%&gt;%
+#         t(.) %&gt;% 
+#         as.data.frame(.) %&gt;% 
+#         bind_cols(., as.data.frame(summary(model.avg(all.models.std, subset = delta &lt;
+# 4))$msTable))</pre>
 
 <pre class = 'prettyprint lang-r'>r2 &lt;- top.list %&gt;% 
     map(r.squaredGLMM) %&gt;% 
@@ -359,7 +405,33 @@ est.ci</pre>
 ## c.K          -7.321326 -0.6453404
 ## c.N           2.211753  9.0215807
 ## c.K:c.N     -11.201201  1.8012012
-## c.P          -4.615447  2.2487800</pre></article></slide>
+## c.P          -4.615447  2.2487800</pre>
+
+</article></slide><slide class=''><hgroup><h2>To dredge or not to dredge?</h2></hgroup><article  id="to-dredge-or-not-to-dredge">
+
+<pre class = 'prettyprint lang-r'>## set up a set of candidate models
+mod1 &lt;- lm(yield ~ N + K + P, data = npk) ## hyp: yeild varies as function of all three nutrients
+mod2 &lt;- lm(yield ~ N + K, data = npk) ## hyp: yield varies as a function of N and K
+mod3 &lt;- lm(yield ~ N, data = npk) ## hyp: yeild varies as a function of N only
+mod4 &lt;- lm(yield ~ N*P*K, data = npk) ## 
+
+model.selection &lt;- model.sel(mod1, mod2, mod3, mod4)
+model.avg(model.selection, subset = delta &lt;= 2)</pre>
+
+<pre >## 
+## Call:
+## model.avg.model.selection(object = model.selection, subset = delta &lt;= 
+##     2)
+## 
+## Component models: 
+## &#39;12&#39; &#39;2&#39; 
+## 
+## Coefficients: 
+##        (Intercept)       N1        K1
+## full       53.2288 5.616667 -2.324272
+## subset     53.2288 5.616667 -3.983333</pre>
+
+<pre class = 'prettyprint lang-r'>## and then carry on with analysis as above</pre></article></slide>
 
 
   <slide class="backdrop"></slide>

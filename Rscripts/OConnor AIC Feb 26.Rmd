@@ -57,6 +57,7 @@ model.avg(all.models)
 ## Averaging across subsets
 ```{r,error=FALSE}
 summary(model.avg(all.models, subset = delta < 4))
+summary(model.avg(all.models, subset = cumsum(weight) <= .95)) ## or all models in the 95% CI
 ```
 
 ## Model averaged 95% CIs
@@ -82,13 +83,13 @@ model.out
 
 ## Or using this function by Joey
 ```{r,error=FALSE}
-model.output <- top.list %>% 
-        map(r.squaredGLMM) %>%
-        as.data.frame(.)%>%
-        t(.) %>% 
-        as.data.frame(.) %>% 
-        bind_cols(., as.data.frame(summary(model.avg(all.models.std, subset = delta <
-4))$msTable))
+# model.output <- top.list %>% 
+#         map(r.squaredGLMM) %>%
+#         as.data.frame(.)%>%
+#         t(.) %>% 
+#         as.data.frame(.) %>% 
+#         bind_cols(., as.data.frame(summary(model.avg(all.models.std, subset = delta <
+# 4))$msTable))
 ```
 ```{r}
 r2 <- top.list %>% 
@@ -125,7 +126,16 @@ est.ci <- cbind(top.sum$coefmat.subset,confint(top.sum))
 est.ci
 ```
 
+## To dredge or not to dredge?
+```{r}
+## set up a set of candidate models
+mod1 <- lm(yield ~ N + K + P, data = npk) ## hyp: yeild varies as function of all three nutrients
+mod2 <- lm(yield ~ N + K, data = npk) ## hyp: yield varies as a function of N and K
+mod3 <- lm(yield ~ N, data = npk) ## hyp: yeild varies as a function of N only
+mod4 <- lm(yield ~ N*P*K, data = npk) ## 
 
-
-
+model.selection <- model.sel(mod1, mod2, mod3, mod4)
+model.avg(model.selection, subset = delta <= 2)
+## and then carry on with analysis as above
+```
 
