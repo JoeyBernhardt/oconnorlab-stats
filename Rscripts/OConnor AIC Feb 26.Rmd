@@ -20,7 +20,7 @@ require(broom)
 ## npk dataset
 plant yield following manipulations of N, P, and K in 6 treatment blocks.
 ```{r,error=FALSE}
-# head(npk)
+head(npk)
 # attach(npk)
 npk
 ```
